@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- data from https://data.giss.nasa.gov/gistemp/ -->
+<html lang="en">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js"></script>
+    </head>
+    <body>
+
+    </script>
+  
+
+</head>
+<body>
+   
+        <h1 style="text-align:center;"></h1>
+        <form action="/geolocate.html">
+            <button class="btn btn-danger btn-lg">to Geolocate</button>
+        </form>
+    </div>
+</body>
+
+
+
+        <canvas id="myChart" width="800" height="400"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            const xLabels = []
+            const yTemps = []
+            chartIt()
+            async function chartIt() {
+                await getData()
+                const ctx = document.getElementById("myChart")
+                new Chart(ctx, {
+                    type: "line",
+                    // type: "bar",
+                    fill: true,
+                    data: {
+                        labels: xLabels,
+                        datasets: [
+                            {
+                                label: "Global average temperature",
+                                data: yTemps,
+                                borderWidth: 1,
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    // callback: function (value, index, values) {
+                                    //     return "$" + value
+                                    callback: function (value, index, values) {
+                                        return value + "°"
+                                    },
+                                },
+                            },
+                        },
+                    },
+                })
+            }
+
+            async function getData() {
+                const response = await fetch("ZonAnn.Ts+dSST.csv")
+                const data = await response.text()
+                // data.split("\n") gives you linebrakes
+                // with .slice(1) we take off the first column
+                // (we "slice" in between 0 and 1, and we keep 1+)
+                // (we thus leave out column 0 (the first column))
+                const table = data.split("\n").slice(1)
+                table.forEach((row) => {
+                    const columns = row.split(",")
+                    const year = columns[0]
+                    xLabels.push(year)
+                    const temp = columns[1]
+                    yTemps.push(parseFloat(temp) + 14)
+                    console.log(year, temp)
+                })
+                // console.log(rows)
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <style>
+            .h1 {
+                font-family: 'Lucida Handwriting', 'monospace', Times, serif;
+            }
+            .h3 {
+                font-family: 'Lucida Handwriting', Helvetica, sans-serif;
+            }
+            .p1 {
+                font-family: 'Lucida Console', 'Courier New', monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="/">
+            <button class="btn btn-danger btn-lg">home</button>
+        </form>
+        <h1 class="h1" style="text-align: center">Welcome to the Geolocation API</h1>
+        <h3 class="h3" style="text-align: center">Find out where we think you are</h3>
+
+        <script>
+            if ('geolocation' in navigator) {
+                console.log('geolocation available')
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude
+                    const lon = position.coords.longitude
+                    document.getElementById('latitude').textContent = lat
+                    document.getElementById('longitude').textContent = lon
+
+                    const data = { lat, lon }
+
+                    const options = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    }
+                    console.log(options)
+                    const response = await fetch('/api', options)
+                    const json = await response.json()
+                    console.log(json)
+                })
+            } else {
+                console.log('geolocation not available')
+            }
+        </script>
+        <p class="p1" style="text-align: center">
+            latitude: <span id="latitude"></span>&deg<br />
+            longitude: <span id="longitude"></span>&deg
+        </p>
+    </body>
+</html>
