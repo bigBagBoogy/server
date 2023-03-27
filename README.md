@@ -1,1 +1,1 @@
-# server
+# Welcome at the simplest server!

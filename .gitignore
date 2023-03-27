@@ -1,0 +1,7 @@
+node_modules
+.vscode
+favicon.ico
+favicon-32x32.ico
+.prettierignore
+.prettierrc
+database.db
