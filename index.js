@@ -15,20 +15,22 @@ app.use(express.json({ limit: '1mb' }))
 const database = new Datastore('database.db')
 database.loadDatabase()
 
-app.post('/api', (request, response) => {
-    console.log('I got a request!')
-    const data = request.body
-    const timeStamp = Date.now()
-    const date = new Date(timeStamp)
-    dateFormat = date.getHours() + ':' + date.getMinutes() + ', ' + date.toDateString()
-    data.dateFormat = dateFormat
-    database.insert(data)
-    // console.log(request.body)
-    response.json({
-        status: 'success',
-        latitude: data.lat,
-        longitude: data.lon
+app.get('/api', (request, response) => {
+    database.find({}, (err, data) => {
+        if (err) {
+            response.end()
+            return
+        }
+        response.send(data)
     })
+})
+
+app.post('/api', (request, response) => {
+    const data = request.body
+    const timestamp = Date.now()
+    data.timestamp = timestamp
+    database.insert(data)
+    response.json(data)
 })
 
 // below alternative express server setup***

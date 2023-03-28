@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <title>Geolocate</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
         <style>
+            #mymap {
+                height: 350px;
+            }
             .h1 {
                 font-family: 'Lucida Handwriting', 'monospace', Times, serif;
             }
@@ -14,9 +23,9 @@
         </style>
     </head>
     <body>
-        <form action="/">
-            <button class="btn btn-danger btn-lg">home</button>
-        </form>
+        <form action="/"><button class="btn btn-danger btn-lg">home</button></form>
+        <form action="/selfie.html"><button class="btn btn-danger btn-lg">to Selfie</button></form>
+        <form action="/all.html"><button class="btn btn-danger btn-lg">to All</button></form>
         <h1 class="h1" style="text-align: center">Welcome to the Geolocation API</h1>
         <h3 class="h3" style="text-align: center">Find out where we think you are</h3>
 
@@ -28,15 +37,19 @@
                     const lon = position.coords.longitude
                     document.getElementById('latitude').textContent = lat
                     document.getElementById('longitude').textContent = lon
-
                     const data = { lat, lon }
+                    const mymap = L.map('mymap').setView([lat, lon], 15)
+                    const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    const tiles = L.tileLayer(tileUrl, { attribution })
+                    tiles.addTo(mymap)
+                    const marker = L.marker([lat, lon]).addTo(mymap)
 
                     const options = {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(data)
                     }
-                    console.log(options)
                     const response = await fetch('/api', options)
                     const json = await response.json()
                     console.log(json)
@@ -49,5 +62,6 @@
             latitude: <span id="latitude"></span>&deg<br />
             longitude: <span id="longitude"></span>&deg
         </p>
+        <div id="mymap"></div>
     </body>
 </html>
