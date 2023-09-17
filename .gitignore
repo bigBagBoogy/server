@@ -6,3 +6,5 @@ favicon-32x32.ico
 .prettierrc
 database.db
 .gitignore
+.env
+.bigBagBoogy
